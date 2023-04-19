@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
-import { searchLocationReducer } from "./function";
+import { locationApiReducer } from "./function";
 
 const rootReducer = combineReducers({
-  searchLocation: searchLocationReducer,
+  locationApi: locationApiReducer,
 });
 export default rootReducer;

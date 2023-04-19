@@ -2,16 +2,16 @@ import { processIDs } from "@/config";
 import { ReturnType } from "../action"
 
 const initialState = {
-    data: null,
+    searchedLocationArray: [],
     loading: true
 }
 
-export const searchLocationReducer = (state = initialState, action: ReturnType) => {
+export const locationApiReducer = (state = initialState, action: ReturnType) => {
     switch (action.type) {
         case processIDs?.searchlocation:
             return {
                 ...state,
-                data: action.payload,
+                searchedLocationArray: action.payload,
                 loading: false
             }
             break;

@@ -1,14 +1,11 @@
-import { processIDs } from "@/config"
-import { Data } from "@/pages/api";
-
 export type ReturnType = {
     type: string;
     payload: object
 }
 
-export const getSearchedLocationData = (query: Data['response']) => {
+export const getLocationApiData = (type: string, query: object) => {
     const returnData: ReturnType = {
-        type: processIDs?.searchlocation,
+        type: type,
         payload: query
     }
     return returnData
