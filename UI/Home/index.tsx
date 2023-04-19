@@ -12,7 +12,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const fetchSearchedLocation = async () => {
     const data = await callApi(processIDs?.searchlocation, {});
-    dispatch(getSearchedLocationData(data));
+    dispatch(getSearchedLocationData(data?.response));
   };
   useEffect(() => {
     fetchSearchedLocation();
