@@ -1,34 +1,22 @@
-import { actions } from "../action/actions";
-import { Action } from "../action/function";
+import { processIDs } from "@/config";
+import { ReturnType } from "../action"
 
-const searchlocation = {
-  data: null,
-  loading: false,
-};
+const initialState = {
+    data: null,
+    loading: true
+}
 
-export const searchLocationReducer = (state = searchlocation, action: Action) => {
-  switch (action.type) {
-    case actions?.loading: {
-      return {
-        ...state,
-        loading: true,
-      };
+export const searchLocationReducer = (state = initialState, action: ReturnType) => {
+    switch (action.type) {
+        case processIDs?.searchlocation:
+            return {
+                ...state,
+                data: action.payload,
+                loading: false
+            }
+            break;
+        default: 
+            return state  
+            break;  
     }
-    case actions?.success: {
-      return {
-        ...state,
-        loading: false,
-        data: action?.data 
-      };
-    }
-    case actions?.error: {
-      return {
-        ...state,
-        loading: false,
-        data: action?.data
-      };
-    }
-    default:
-      return state;
-  }
-};
+}

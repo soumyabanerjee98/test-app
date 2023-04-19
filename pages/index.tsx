@@ -1,7 +1,8 @@
 import Head from "next/head";
 import styles from "./index.module.css";
+import Home from "@/UI/Home";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <Head>
@@ -13,7 +14,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>App</main>
+      <main className={styles.main}>
+        <Home />
+      </main>
     </>
   );
 }
