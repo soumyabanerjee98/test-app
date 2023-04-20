@@ -12,7 +12,7 @@ export type Request = {
   data: object | any | undefined;
 };
 
-export default async function handler(
+export async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
