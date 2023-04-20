@@ -6,22 +6,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const searchlocation = async (reqData: Request["data"]) => {
-  const ip = await fetch(
-    `http://api.weatherapi.com/v1/ip.json?key=${process.env.WEATHERAPI}&q=auto:ip`
-  );
-  const ipJson = await ip.json();
-  if (ipJson?.error) {
-    const data: Data = {
-      returnCode: false,
-      response: ipJson?.error,
-      message: "Something went wrong!",
-    };
-    return data;
-  }
-  const lat = ipJson?.lat;
-  const lon = ipJson?.lon;
   const currentLocWeather = await fetch(
-    `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHERAPI}&q=${lat},${lon}&days=${server?.forecastDay}&aqi=yes&alerts=yes`
+    `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHERAPI}&q=${reqData?.query}&days=${server?.forecastDay}&aqi=yes`
   );
   const currentLocWeatherJson = await currentLocWeather.json();
   if (currentLocWeatherJson?.error) {

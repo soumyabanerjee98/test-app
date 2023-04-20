@@ -9,7 +9,7 @@ export type Data = {
 
 export type Request = {
   processId: string;
-  data: object | undefined;
+  data: object | any | undefined;
 };
 
 export default async function handler(
