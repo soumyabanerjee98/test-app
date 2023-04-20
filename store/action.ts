@@ -1,10 +1,6 @@
 export type ReturnType = {
     type: string;
-    payload: object
-}
-
-export const settingsActions = {
-    toggleSettings: 'toggleSettings'
+    payload: object | string
 }
 
 export const getLocationApiData = (type: string, query: object) => {
@@ -13,6 +9,12 @@ export const getLocationApiData = (type: string, query: object) => {
         payload: query
     }
     return returnData
+}
+
+export const settingsActions = {
+    toggleSettings: 'toggleSettings',
+    activeLocation: 'activeLocation',
+    toggleOptions: 'toggleOptions',
 }
 
 export const getSettingsData = (action: string, payload: any) => {

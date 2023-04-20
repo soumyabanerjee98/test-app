@@ -1,20 +1,16 @@
 import Head from "next/head";
 import styles from "./index.module.css";
 import Home from "@/UI/Home";
-import Image from "next/image";
-import GearIcon from "../public/gear-solid.svg";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Settings from "@/UI/Settings";
-import { getSettingsData, settingsActions } from "@/store/action";
+import Header from "@/UI/Header";
+import Footer from "@/UI/Footer";
 
 export default function HomePage() {
-  const dispatch = useDispatch();
   const settingsOpen = useSelector(
     (state: any) => state?.settings?.settingsOpen
   );
-  const openSettings = () => {
-    dispatch(getSettingsData(settingsActions?.toggleSettings, true));
-  };
+
   return (
     <>
       <Head>
@@ -27,14 +23,9 @@ export default function HomePage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <Header />
         <Home />
-        <Image
-          src={GearIcon}
-          alt="Settings"
-          height={30}
-          className={styles?.gear}
-          onClick={openSettings}
-        />
+        <Footer />
         {settingsOpen && <Settings />}
       </main>
     </>

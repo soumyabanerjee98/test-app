@@ -1,8 +1,47 @@
-.modal{
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.25);
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+}
+.item {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+.itemactive,
+.item:hover {
+  border-color: var(--blue);
+}
+.options {
+  margin: 1.2rem 0 0 0;
+}
+.option {
+  margin: 0.4rem 0 0 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.optname {
+  opacity: 0.9;
+}
+.checkbox {
+  cursor: pointer;
 }

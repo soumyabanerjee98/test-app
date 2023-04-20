@@ -1,12 +1,6 @@
 .main{
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: hidden;
     font-family: "Encode Sans", sans-serif;
     position: relative;
-}
-.gear{
-    cursor: pointer;
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
 }

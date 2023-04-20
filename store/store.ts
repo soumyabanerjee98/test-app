@@ -1,12 +1,12 @@
 import { legacy_createStore as createStore, applyMiddleware } from "redux";
 import { persistStore, persistReducer } from 'redux-persist'
-import storageSession from 'redux-persist/lib/storage/session'
+import localStorage from 'redux-persist/lib/storage'
 import thunk from "redux-thunk";
 import rootReducer from "./reducer";
 
 const persistConfig = {
   key: 'root',
-  storage: storageSession,
+  storage: localStorage,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -6,6 +6,17 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const searchlocation = async (reqData: Request["data"]) => {
+  let myHeaders = new Headers();
+  myHeaders.append("apikey", `${process.env.CURRENCYAPI}`);
+  const currency = await fetch(
+    `https://api.apilayer.com/fixer/convert?to=${reqData?.currency}&from=INR&amount=1`,
+    {
+      method: "GET",
+      redirect: "follow",
+      headers: myHeaders,
+    }
+  );
+  const currencyJson = await currency.json();
   const currentLocWeather = await fetch(
     `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHERAPI}&q=${reqData?.query}&days=${server?.forecastDay}&aqi=yes`
   );
@@ -20,7 +31,7 @@ const searchlocation = async (reqData: Request["data"]) => {
   }
   const data: Data = {
     returnCode: true,
-    response: currentLocWeatherJson,
+    response: {...currentLocWeatherJson, currency: currencyJson},
     message: "Data fetched successfully",
   };
   return data;
