@@ -45,3 +45,13 @@
 .checkbox {
   cursor: pointer;
 }
+
+@media only screen and (max-width: 426px) {
+    .list{
+        grid-template-columns: repeat(2, auto);
+    }
+        .option {
+            justify-content: space-between;
+            gap: 0;
+        }
+}
