@@ -10,8 +10,6 @@ const Home = () => {
   const searchedLocationData = useSelector(
     (state: any) => state?.locationApi?.searchedLocationDetails
   );
-  console.log(searchedLocationData);
-
   const options = useSelector((state: any) => state?.settings?.options);
   const locations = useSelector((state: any) => state?.settings?.locations);
   const selectedLocation = locations?.find(
