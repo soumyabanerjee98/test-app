@@ -1,0 +1,174 @@
+.App {
+  margin: 0;
+}
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url(../public/cool-background.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.login-card {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  padding: 1.5rem 1.3rem;
+  background-color: aliceblue;
+  font-size: small;
+}
+.login-card .header{
+text-align: center;
+margin-bottom: 1rem;
+font-size: large;
+color: #000064;
+font-weight: 500;
+}
+.login-card .section{
+  margin: 0.2rem 0;
+  width: auto;
+}
+.login-card .label{
+  margin: 0.2rem 0;
+}
+.login-card input{
+  width: 100%;
+}
+.login-card .section.button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0.8rem 0 0 0;
+}
+.login-card .warning{
+  color: red;
+}
+.dashboard-page{
+  padding: 1rem;
+}
+.dashboard-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dashboard-page .header .name{
+  font-size: 24px;
+  font-weight: 600;
+  color: #000064;
+}
+.dashboard-page .header .actions {
+  display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.dashboard-page .header .actions .upload{
+  font-weight: 500;
+  color: green;
+  cursor: pointer;
+}
+.dashboard-page .header .actions .logout {
+  font-weight: 500;
+  color: red;
+  cursor: pointer;
+}
+.dashboard-page .body{
+  height: 80vh;
+  margin: 0.8rem 0;
+  display: flex;
+}
+.dashboard-page .body .filter{
+  flex-basis: 20%;
+  padding: 0.4rem 0;
+}
+.dashboard-page .body .filter input {
+ width: -webkit-fill-available;
+ margin-right: 0.6rem;
+}
+.dashboard-page .body .filter .size {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  margin: 0.2rem 0.4rem;
+  padding: 0.4rem 0.2rem;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+}
+.dashboard-page .body .filter .size.active {
+  border-color: #000064;
+}
+.dashboard-page .body .filter .size:hover {
+  border-color: #000064;
+  transition: all 200ms ease-in-out;
+}
+.dashboard-page .body .filter .name-search{
+  margin-bottom: 1rem;
+  font-size: 16px;
+}
+.dashboard-page .body .filter .section {
+  font-size: 14px;
+}
+.dashboard-page .body .filter span {
+  font-size: 12px;
+}
+.dashboard-page .body .filter .section .label{
+  margin-bottom: 0.2rem;
+  color: #000064;
+  font-weight: 500;
+}
+.dashboard-page .body .filter .clear {
+  margin-top: 1.2rem;
+  padding: 0.4rem 0.6rem;
+  background-color: #000064;
+  color: white;
+  font-weight: 500;
+  transition: all 200ms ease-in-out;
+}
+.dashboard-page .body .filter .clear:hover {
+  background-color: aliceblue;
+  color: #000064;
+  transition: all 200ms ease-in-out;
+}
+.dashboard-page .body .files {
+  flex-basis: 80%;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.dashboard-page .body .files::-webkit-scrollbar {
+  display: none;
+}
+.dashboard-page .body .files .no-files{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  opacity: 0.6;
+}
+.file-item{
+  border: 1px solid rgba(0, 0, 0, 0.20);
+  border-radius: 4px;
+  margin: 0.4rem 0.2rem;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+  position: relative;
+}
+.file-item:hover {
+  border-color: #000064;
+  transition: all 200ms ease-in-out;
+}
+.file-item .name{
+  font-weight: 500;
+  color: #000064;
+}
+.file-item .date {
+  margin-top: 1rem;
+}
+.file-item .size {
+  position: absolute;
+  top: 0.2rem;
+    right: 0.6rem;
+    opacity: 0.6;
+    font-style: italic;
+}
