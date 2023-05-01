@@ -36,7 +36,6 @@ const Dashboard = () => {
       };
     });
   }, []);
-  useEffect(() => {}, [profileData]);
   const upload = async (e) => {
     const fileArr = Array.from(e.target.files);
     if (fileArr?.length === 0) {
@@ -49,31 +48,20 @@ const Dashboard = () => {
     const data = await axios.post(`${url}upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        username: profileData?.username,
       },
     });
     if (!data?.data?.returnCode) {
       toast.error(`${data?.data?.msg}`);
       return;
     }
-    const updateDB = await axios.post(
-      `${url}updatedatabase`,
-      JSON.stringify({
-        username: profileData?.username,
-        files: data?.data?.returnData?.[0],
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
     setProfileData((prev) => {
-      return { ...prev, files: updateDB?.data?.returnData?.files };
+      return { ...prev, files: data?.data?.returnData?.files };
     });
-    toast.success(`${updateDB?.data?.msg}`);
+    toast.success(`${data?.data?.msg}`);
     sessionStorage.setItem(
       "profiledata",
-      JSON.stringify(updateDB?.data?.returnData)
+      JSON.stringify(data?.data?.returnData)
     );
   };
   const opentab = (link) => {
@@ -289,7 +277,7 @@ const Dashboard = () => {
             style={{ display: "none", appearance: "none" }}
             id="upload"
             type={"file"}
-            multiple={false}
+            multiple={true}
             onChange={upload}
           />
           <div className="logout" onClick={logout}>

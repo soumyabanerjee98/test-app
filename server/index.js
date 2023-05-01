@@ -136,7 +136,7 @@ app.post("/upload", async (req, res) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    upload(req, res, (err) => {
+    upload(req, res, async (err) => {
       if (err instanceof multer.MulterError) {
         res.send({
           ...this?.returnJSONfailure,
@@ -151,10 +151,25 @@ app.post("/upload", async (req, res) => {
         });
         return;
       }
-      let returnArr = req.files;
+      const user = req.headers?.username;
+      const event = new Date();
+      const fileArr = req.files;
+      await files.insertMany(
+        fileArr.map((v) => {
+          return {
+            user: user,
+            name: v?.filename,
+            format: v?.mimetype.split("/")[1],
+            size: `${Math.floor(v?.size / 1000)} kb`,
+            date: event.toString().split(" ", 5).join(" "),
+          };
+        })
+      );
+      let allfiles = await files.find({ user: user });
+      allfiles.reverse();
       res.send({
         ...this?.returnJSONsuccess,
-        returnData: returnArr,
+        returnData: { username: user, files: allfiles },
         msg: "File uploaded successfully!",
       });
     });
@@ -164,25 +179,6 @@ app.post("/upload", async (req, res) => {
       msg: `Something went wrong: ${error}`,
     });
   }
-});
-
-app.post("/updatedatabase", async (req, res) => {
-  const event = new Date();
-  const newFile = new files({
-    user: req?.body?.username,
-    name: req?.body?.files?.filename,
-    format: req?.body?.files?.mimetype.split("/")[1],
-    size: `${Math.floor(req?.body?.files?.size / 1000)} kb`,
-    date: event.toString().split(" ", 5).join(" "),
-  });
-  await newFile.save();
-  let allfiles = await files.find({ user: req?.body?.username });
-  allfiles.reverse();
-  res?.send({
-    ...this.returnJSONsuccess,
-    returnData: { username: req?.body?.username, files: allfiles },
-    msg: "DB updated successfully!",
-  });
 });
 
 app.listen(port, () => {
