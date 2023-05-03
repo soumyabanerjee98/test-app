@@ -172,3 +172,44 @@ font-weight: 500;
     opacity: 0.6;
     font-style: italic;
 }
+.file-item .action-button{
+position: absolute;
+  bottom: 0.2rem;
+  right: 0.2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.file-item .delete, .file-item .rename{
+  padding: 0.4rem 0.6rem;
+  transition: all 200ms ease-in-out;
+  color: white;
+}
+.file-item .delete{
+    background-color: tomato;
+    border: 1px solid red;
+}
+.file-item .rename{
+    background-color: gold;
+    border: 1px solid goldenrod;
+}
+.file-item .rename.save {
+  background-color: rgb(1, 168, 1);
+  border: 1px solid green;
+}
+.file-item .delete:hover, .file-item .rename:hover {
+  background-color: white;
+  transition: all 200ms ease-in-out;
+}
+.file-item .delete:hover{
+  color: tomato;
+}
+.file-item .rename:hover {
+  color: gold;
+}
+.file-item .rename.save:hover {
+  color: rgb(1, 168, 1);
+}
+.file-item .rename-input{
+  width: 50%;
+}

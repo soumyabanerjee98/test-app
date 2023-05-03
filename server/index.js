@@ -154,7 +154,7 @@ app.post("/upload", async (req, res) => {
         });
         return;
       }
-      const user = req.headers?.username;
+      const user = req.headers?.user;
       const event = new Date();
       const fileArr = req.files;
       await files.insertMany(
@@ -172,8 +172,72 @@ app.post("/upload", async (req, res) => {
       allfiles.reverse();
       res.send({
         ...this?.returnJSONsuccess,
-        returnData: { username: user, files: allfiles },
+        returnData: { email: user, files: allfiles },
         msg: "File uploaded successfully!",
+      });
+    });
+  } catch (error) {
+    res.send({
+      ...this?.returnJSONfailure,
+      msg: `Something went wrong: ${error}`,
+    });
+  }
+});
+
+app.post("/delete", async (req, res) => {
+  try {
+    let dir = __dirname + "/files";
+    const targetfile = await files.findOne({ _id: req?.body?.fileId });
+    const filePath = dir + `/${targetfile?.name}`;
+    fs.unlink(filePath, async (err) => {
+      if (err) {
+        res.send({
+          ...this?.returnJSONfailure,
+          msg: `${err}`,
+        });
+        return;
+      }
+      await files.findOneAndDelete({ _id: req?.body?.fileId });
+      let allfiles = await files.find({ user: targetfile?.user });
+      allfiles.reverse();
+      res.send({
+        ...this?.returnJSONsuccess,
+        returnData: { email: targetfile?.user, files: allfiles },
+        msg: "File deleted successfully!",
+      });
+    });
+  } catch (error) {
+    res.send({
+      ...this?.returnJSONfailure,
+      msg: `Something went wrong: ${error}`,
+    });
+  }
+});
+
+app.post("/update", async (req, res) => {
+  try {
+    let dir = __dirname + "/files";
+    const targetfile = await files.findOne({ _id: req?.body?.fileId });
+    const oldfilePath = dir + `/${targetfile?.name}`;
+    const newFilePath = dir + `/${req?.body?.fileName}`;
+    fs.rename(oldfilePath, newFilePath, async (err) => {
+      if (err) {
+        res.send({
+          ...this?.returnJSONfailure,
+          msg: `${err}`,
+        });
+        return;
+      }
+      await files.updateOne(
+        { _id: req?.body?.fileId },
+        { $set: { name: req?.body?.fileName } }
+      );
+      let allfiles = await files.find({ user: targetfile?.user });
+      allfiles.reverse();
+      res.send({
+        ...this?.returnJSONsuccess,
+        returnData: { email: targetfile?.user, files: allfiles },
+        msg: "File renamed successfully!",
       });
     });
   } catch (error) {

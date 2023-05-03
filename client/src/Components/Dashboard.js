@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { url } from "../config";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
-    username: "",
+    email: "",
     files: [],
   });
   const [filters, setFilters] = useState({
@@ -31,7 +31,7 @@ const Dashboard = () => {
     setProfileData((prev) => {
       return {
         ...prev,
-        username: sessionData?.email,
+        email: sessionData?.email,
         files: sessionData?.files,
       };
     });
@@ -48,7 +48,7 @@ const Dashboard = () => {
     const data = await axios.post(`${url}upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        username: profileData?.username,
+        user: profileData?.email,
       },
     });
     if (!data?.data?.returnCode) {
@@ -260,10 +260,127 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const deleteFile = async (id) => {
+    const data = await axios.post(
+      `${url}delete`,
+      JSON.stringify({ fileId: id }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!data?.data?.returnCode) {
+      toast.error(`${data?.data?.msg}`);
+      return;
+    }
+    setProfileData((prev) => {
+      return { ...prev, files: data?.data?.returnData?.files };
+    });
+    toast.success(`${data?.data?.msg}`);
+    sessionStorage.setItem(
+      "profiledata",
+      JSON.stringify(data?.data?.returnData)
+    );
+  };
+
+  const FileItems = (props) => {
+    const { i } = props;
+    const [edit, setEdit] = useState(false);
+    const [rename, setRename] = useState(i?.name.split(".")[0]);
+    const editName = () => {
+      setEdit(true);
+    };
+    const saveName = async () => {
+      if (rename === "") {
+        toast.error("Please enter a name!");
+        return;
+      }
+      if (rename.includes(".")) {
+        toast.error('Can not put "." in between!');
+        return;
+      }
+      const data = await axios.post(
+        `${url}update`,
+        JSON.stringify({
+          fileId: i?._id,
+          fileName: rename + `.${i?.name.split(".")[1]}`,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!data?.data?.returnCode) {
+        toast.error(`${data?.data?.msg}`);
+        return;
+      }
+      setProfileData((prev) => {
+        return { ...prev, files: data?.data?.returnData?.files };
+      });
+      toast.success(`${data?.data?.msg}`);
+      sessionStorage.setItem(
+        "profiledata",
+        JSON.stringify(data?.data?.returnData)
+      );
+      setEdit(false);
+    };
+    return (
+      <div
+        onClick={(e) => {
+          if (e.target.nodeName === "BUTTON" || edit) {
+            return;
+          }
+          opentab(i?.name);
+        }}
+        className="file-item"
+      >
+        {edit ? (
+          <input
+            value={rename}
+            onChange={(e) => {
+              setRename(e.target.value);
+            }}
+            className="rename-input"
+          />
+        ) : (
+          <div className="name">{i?.name}</div>
+        )}
+        <div className="date">{i?.date}</div>
+        <div className="size">{i?.size}</div>
+        <div className="action-button">
+          <button
+            type="button"
+            className={`rename ${edit ? "save" : ""}`}
+            onClick={() => {
+              if (edit) {
+                saveName();
+                return;
+              }
+              editName();
+            }}
+          >
+            {edit ? "Save" : "Rename"}
+          </button>
+          <button
+            type="button"
+            className="delete"
+            onClick={() => {
+              deleteFile(i?._id);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard-page">
       <div className="header">
-        <div className="name">{profileData?.username}</div>
+        <div className="name">{profileData?.email}</div>
         <div className="actions">
           <div
             className="upload"
@@ -339,17 +456,9 @@ const Dashboard = () => {
           ) : (
             <div className="all-files">
               {profileData?.files?.map((i) => (
-                <div
-                  key={`${i?._id}`}
-                  onClick={() => {
-                    opentab(i?.name);
-                  }}
-                  className="file-item"
-                >
-                  <div className="name">{i?.name}</div>
-                  <div className="date">{i?.date}</div>
-                  <div className="size">{i?.size}</div>
-                </div>
+                <Fragment key={`file-item-${i?._id}`}>
+                  <FileItems i={i} />
+                </Fragment>
               ))}
             </div>
           )}
