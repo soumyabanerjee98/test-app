@@ -23,15 +23,12 @@ const port = process.env.PORT;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "files");
+    cb(null, `files/${req?.headers?.user}`);
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
       file.originalname.split(".")[0].toString() +
-        "-" +
-        uniqueSuffix +
         `.${file.mimetype.split("/")[1].toString()}`
     );
   },
@@ -85,6 +82,8 @@ app.post("/register", async (req, res) => {
     { password: req?.body?.password },
     process.env.JWT_SECRET_TOKEN
   );
+  const dir = __dirname + "/files/" + req?.body.email;
+  fs.mkdirSync(dir, { recursive: true });
   const newUser = new users({
     email: req?.body?.email,
     password: generateToken,
@@ -135,10 +134,6 @@ app.post("/login", async (req, res) => {
 
 app.post("/upload", async (req, res) => {
   try {
-    let dir = __dirname + "/files";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
     upload(req, res, async (err) => {
       if (err instanceof multer.MulterError) {
         res.send({
@@ -162,6 +157,7 @@ app.post("/upload", async (req, res) => {
           return {
             user: user,
             name: v?.filename,
+            path: `${user}/${v?.filename}`,
             format: v?.mimetype.split("/")[1],
             size: `${Math.floor(v?.size / 1000)} kb`,
             date: event.toString().split(" ", 5).join(" "),
@@ -186,9 +182,9 @@ app.post("/upload", async (req, res) => {
 
 app.post("/delete", async (req, res) => {
   try {
-    let dir = __dirname + "/files";
     const targetfile = await files.findOne({ _id: req?.body?.fileId });
-    const filePath = dir + `/${targetfile?.name}`;
+    const dir = __dirname + "/files";
+    const filePath = dir + `/${targetfile?.path}`;
     fs.unlink(filePath, async (err) => {
       if (err) {
         res.send({
@@ -216,10 +212,10 @@ app.post("/delete", async (req, res) => {
 
 app.post("/update", async (req, res) => {
   try {
-    let dir = __dirname + "/files";
+    const dir = __dirname + "/files";
     const targetfile = await files.findOne({ _id: req?.body?.fileId });
-    const oldfilePath = dir + `/${targetfile?.name}`;
-    const newFilePath = dir + `/${req?.body?.fileName}`;
+    const oldfilePath = dir + `/${targetfile?.path}`;
+    const newFilePath = dir + `/${targetfile?.user}/${req?.body?.fileName}`;
     fs.rename(oldfilePath, newFilePath, async (err) => {
       if (err) {
         res.send({
@@ -230,7 +226,12 @@ app.post("/update", async (req, res) => {
       }
       await files.updateOne(
         { _id: req?.body?.fileId },
-        { $set: { name: req?.body?.fileName } }
+        {
+          $set: {
+            name: req?.body?.fileName,
+            path: `${targetfile?.user}/${req?.body?.fileName}`,
+          },
+        }
       );
       let allfiles = await files.find({ user: targetfile?.user });
       allfiles.reverse();
