@@ -31,7 +31,7 @@ const Dashboard = () => {
     setProfileData((prev) => {
       return {
         ...prev,
-        username: sessionData?.username,
+        username: sessionData?.email,
         files: sessionData?.files,
       };
     });

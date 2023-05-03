@@ -63,69 +63,72 @@ mongoose
 
 app.use(express.static(__dirname + "/files"));
 
-app.post("/generatetoken", async (req, res) => {
-  const user = await users.findOne({ username: req?.body?.username });
+app.post("/register", async (req, res) => {
+  const validRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if (!req.body.email.match(validRegex)) {
+    res?.send({
+      ...this.returnJSONfailure,
+      msg: "Invalid email!",
+    });
+    return;
+  }
+  const user = await users.findOne({ email: req?.body?.email });
   if (user) {
     res?.send({
       ...this.returnJSONfailure,
-      msg: "Token is already generated for this user",
+      msg: "User already exists!",
     });
     return;
   }
   const generateToken = jwt.sign(
-    { username: req?.body?.username },
+    { password: req?.body?.password },
     process.env.JWT_SECRET_TOKEN
   );
   const newUser = new users({
-    username: req?.body?.username,
+    email: req?.body?.email,
+    password: generateToken,
   });
   await newUser.save();
+  let userfiles = await files.find({ user: req?.body?.email });
+  userfiles.reverse();
   res?.send({
     ...this.returnJSONsuccess,
-    returnData: generateToken,
-    msg: "New token generated. Keep it safe!",
+    returnData: { email: req?.body?.email, files: userfiles },
+    msg: "New user registered!",
   });
 });
 
 app.post("/login", async (req, res) => {
-  const user = await users.findOne({ username: req?.body?.username });
+  const user = await users.findOne({ email: req?.body?.email });
   if (user === null) {
     res?.send({
       ...this.returnJSONfailure,
-      msg: "No such user found",
+      msg: "No such user found!",
     });
     return;
   }
   try {
-    const verifyToken = jwt.verify(
-      req?.body?.token,
-      process.env.JWT_SECRET_TOKEN
-    );
-    if (verifyToken) {
-      if (verifyToken?.username === req?.body?.username) {
-        let userfiles = await files?.find({ user: req?.body?.username });
-        userfiles.reverse();
-        res?.send({
-          ...this.returnJSONsuccess,
-          returnData: { username: req?.body?.username, files: userfiles },
-          msg: "Logged in successfully!",
-        });
-        return;
-      }
+    const password = user.password;
+    const verifyToken = jwt.verify(password, process.env.JWT_SECRET_TOKEN);
+    if (verifyToken?.password === req?.body?.password) {
+      let userfiles = await files?.find({ user: req?.body?.email });
+      userfiles.reverse();
       res?.send({
-        ...this.returnJSONfailure,
-        msg: "Invalid token!",
+        ...this.returnJSONsuccess,
+        returnData: { email: req?.body?.email, files: userfiles },
+        msg: "Logged in successfully!",
       });
       return;
     }
     res?.send({
       ...this.returnJSONfailure,
-      msg: "Invalid token!",
+      msg: "Invalid password!",
     });
   } catch (error) {
     res?.send({
       ...this.returnJSONfailure,
-      msg: "Invalid token!",
+      msg: "Invalid password!",
     });
   }
 });

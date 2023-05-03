@@ -7,21 +7,21 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: "",
-    token: "",
+    email: "",
+    password: "",
   });
   const navigate = useNavigate();
-  const GenerateToken = async () => {
-    if (credentials?.username === "") {
-      toast.error("Please enter username");
+  const Register = async () => {
+    if (credentials?.email === "") {
+      toast.error("Please enter email");
       return;
     }
-    if (credentials?.username?.length < 8) {
-      toast.error("Username must be 8 characters long");
+    if (credentials?.password === "") {
+      toast.error("Please enter password");
       return;
     }
     const data = await axios.post(
-      `${url}generatetoken`,
+      `${url}register`,
       JSON.stringify(credentials),
       {
         headers: {
@@ -33,22 +33,20 @@ const Login = () => {
       toast.error(data?.data?.msg);
       return;
     }
-    setCredentials((prev) => {
-      return { ...prev, token: data?.data?.returnData };
-    });
     toast.success(data?.data?.msg);
+    sessionStorage.setItem(
+      "profiledata",
+      JSON.stringify(data?.data?.returnData)
+    );
+    navigate("/dashboard");
   };
   const Login = async () => {
-    if (credentials?.username === "") {
-      toast.error("Please enter username");
+    if (credentials?.email === "") {
+      toast.error("Please enter email");
       return;
     }
-    if (credentials?.username?.length < 8) {
-      toast.error("Username must be 8 characters long");
-      return;
-    }
-    if (credentials?.token === "") {
-      toast.error("Please enter token");
+    if (credentials?.password === "") {
+      toast.error("Please enter password");
       return;
     }
     const data = await axios.post(`${url}login`, JSON.stringify(credentials), {
@@ -72,25 +70,25 @@ const Login = () => {
         <div className="header">Login</div>
         <div className="form">
           <div className="section">
-            <div className="label">Username</div>
+            <div className="label">E mail</div>
             <input
-              type="text"
-              value={credentials?.username}
+              type="email"
+              value={credentials?.email}
               onChange={(e) => {
                 setCredentials((prev) => {
-                  return { ...prev, username: e.target.value };
+                  return { ...prev, email: e.target.value };
                 });
               }}
             />
           </div>
           <div className="section">
-            <div className="label">Token</div>
+            <div className="label">Password</div>
             <input
-              type="text"
-              value={credentials?.token}
+              type="password"
+              value={credentials?.password}
               onChange={(e) => {
                 setCredentials((prev) => {
-                  return { ...prev, token: e.target.value };
+                  return { ...prev, password: e.target.value };
                 });
               }}
             />
@@ -99,18 +97,9 @@ const Login = () => {
             <button type="button" onClick={Login}>
               Login
             </button>
-            <button type="button" onClick={GenerateToken}>
-              Generate token
+            <button type="button" onClick={Register}>
+              Register
             </button>
-          </div>
-          <div className="warning">
-            <ul>
-              <li>
-                If you are a new user, please generate new token and keep it
-                safe
-              </li>
-              <li>If token is lost or forgotten, please contact admin</li>
-            </ul>
           </div>
         </div>
       </div>
