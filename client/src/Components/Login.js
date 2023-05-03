@@ -20,6 +20,10 @@ const Login = () => {
       toast.error("Please enter password");
       return;
     }
+    if (credentials?.password.length < 8) {
+      toast.error("Password should be at least 8 characters long!");
+      return;
+    }
     const data = await axios.post(
       `${url}register`,
       JSON.stringify(credentials),
@@ -47,6 +51,10 @@ const Login = () => {
     }
     if (credentials?.password === "") {
       toast.error("Please enter password");
+      return;
+    }
+    if (credentials?.password.length < 8) {
+      toast.error("Password should be at least 8 characters long!");
       return;
     }
     const data = await axios.post(`${url}login`, JSON.stringify(credentials), {
