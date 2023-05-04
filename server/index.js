@@ -152,6 +152,13 @@ app.post("/upload", async (req, res) => {
       const user = req.headers?.user;
       const event = new Date();
       const fileArr = req.files;
+      await files.deleteMany({
+        name: {
+          $in: fileArr?.map((v) => {
+            return v?.filename;
+          }),
+        },
+      });
       await files.insertMany(
         fileArr.map((v) => {
           return {

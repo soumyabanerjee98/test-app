@@ -292,12 +292,22 @@ const Dashboard = () => {
       setEdit(true);
     };
     const saveName = async () => {
+      const sessionData = JSON.parse(sessionStorage?.getItem("profiledata"));
       if (rename === "") {
         toast.error("Please enter a name!");
         return;
       }
       if (rename.includes(".")) {
         toast.error('Can not put "." in between!');
+        return;
+      }
+      if (
+        sessionData?.files?.find((v) => {
+          return v?.name?.split(".")[0] === rename;
+        }) &&
+        i?.name?.split(".")[0] !== rename
+      ) {
+        toast.error(`A file named ${rename} already!`);
         return;
       }
       const data = await axios.post(
@@ -332,7 +342,7 @@ const Dashboard = () => {
           if (e.target.nodeName === "BUTTON" || edit) {
             return;
           }
-          opentab(i?.name);
+          opentab(i?.path);
         }}
         className="file-item"
       >
@@ -363,6 +373,18 @@ const Dashboard = () => {
           >
             {edit ? "Save" : "Rename"}
           </button>
+          {edit && (
+            <button
+              type="button"
+              className="rename"
+              onClick={() => {
+                setEdit(false);
+                setRename(i?.name.split(".")[0]);
+              }}
+            >
+              Cancel
+            </button>
+          )}
           <button
             type="button"
             className="delete"
